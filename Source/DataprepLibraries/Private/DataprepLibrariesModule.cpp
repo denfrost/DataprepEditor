@@ -184,39 +184,44 @@ public:
 						PackageName = PickAssetPathWidget->GetFullAssetPath().ToString();
 						DataTableName = FPackageName::GetLongPackageAssetName(PackageName);
 
-						// Check if the user inputed a valid asset name, if they did not, give it the generated default name
-						if (DataTableName.IsEmpty())
+						if (PackageName.IsEmpty())
 						{
-							// Use the defaults that were already generated.
-							PackageName = PackageNameSuggestion;
-							DataTableName = *Name;
+							// Check if the user inputed a valid asset name, if they did not, give it the generated default name
+							if (DataTableName.IsEmpty())
+							{
+								// Use the defaults that were already generated.
+								PackageName = PackageNameSuggestion;
+								DataTableName = *Name;
+							}
+							UPackage* Package = CreatePackage(*PackageName);
+							check(Package);
+
+							// Create DataTable object
+							UDataTable* DataTable = NewObject<UDataTable>(Package, *DataTableName, RF_Public | RF_Standalone);
+							DataTable->RowStruct = FMaterialSubstitutionDataTable::StaticStruct();
+
+							for (UMaterialInterface* Material : Materials)
+							{
+								FMaterialSubstitutionDataTable RowData;
+								RowData.SearchString = Material->GetName();
+								RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
+								RowData.MaterialReplacement = nullptr;
+								DataTable->AddRow(Material->GetFName(), RowData);
+							}
+
+							FContentBrowserModule& ContentBrowserModule = FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
+							ContentBrowserModule.Get().SyncBrowserToAssets(TArray<UObject*>({ DataTable }), true);
+
+							Package->MarkPackageDirty();
+						}
+						else //Implementation =)
+						{
+
+
 						}
 					}
 
-					UPackage* Package = CreatePackage(*PackageName);
-					check(Package);
-
-					//Read DataTable object BaseDT
 					
-
-
-					// Create DataTable object
-					UDataTable* DataTable = NewObject<UDataTable>(Package, *DataTableName, RF_Public | RF_Standalone);
-					DataTable->RowStruct = FMaterialSubstitutionDataTable::StaticStruct();
-
-					for (UMaterialInterface* Material : Materials)
-					{
-						FMaterialSubstitutionDataTable RowData;
-						RowData.SearchString = Material->GetName();
-						RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
-						RowData.MaterialReplacement = nullptr;
-						DataTable->AddRow(Material->GetFName(), RowData);
-					}
-
-					FContentBrowserModule& ContentBrowserModule = FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
-					ContentBrowserModule.Get().SyncBrowserToAssets(TArray<UObject*>({ DataTable }), true);
-
-					Package->MarkPackageDirty();
 				}));
 			}
 			}
