@@ -105,7 +105,7 @@ public:
 									DataTableName = *Name;
 								}
 							}
-
+							
 							UPackage* Package = CreatePackage(*PackageName);
 							check(Package);
 
@@ -132,6 +132,8 @@ public:
 				}
 			}
 		}));
+
+		//Denis
 		Section2.AddDynamicEntry("GetMaterials2", FNewToolMenuSectionDelegate::CreateLambda([](FToolMenuSection& InSection2)
 			{
 				UDataprepEditorContextMenuContext* Context = InSection2.FindContext<UDataprepEditorContextMenuContext>();
@@ -154,7 +156,7 @@ public:
 						{
 							return;
 						}
-		//Denis
+
 		InSection2.AddMenuEntry(
 			"AddAppendToSubstitutionTable",
 			LOCTEXT("AddAppendToSubstitutionLabel", "Add Append To Substitution Table"),
@@ -205,7 +207,6 @@ public:
 					for (UMaterialInterface* Material : Materials)
 					{
 						FMaterialSubstitutionDataTable RowData;
-						RowData.
 						RowData.SearchString = Material->GetName();
 						RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
 						RowData.MaterialReplacement = nullptr;
