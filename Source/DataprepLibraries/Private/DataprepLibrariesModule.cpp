@@ -45,6 +45,7 @@ public:
 		}
 
 		FToolMenuSection& Section = Menu->FindOrAddSection("AssetActions");
+		FToolMenuSection& Section2 = Menu->FindOrAddSection("AssetActions");
 
 		Section.AddDynamicEntry("GetMaterials", FNewToolMenuSectionDelegate::CreateLambda([](FToolMenuSection& InSection)
 		{
@@ -126,9 +127,99 @@ public:
 
 							Package->MarkPackageDirty();
 						}));
+					
+
 				}
 			}
 		}));
+		Section2.AddDynamicEntry("GetMaterials2", FNewToolMenuSectionDelegate::CreateLambda([](FToolMenuSection& InSection2)
+			{
+				UDataprepEditorContextMenuContext* Context = InSection2.FindContext<UDataprepEditorContextMenuContext>();
+				if (Context)
+				{
+					if (Context->SelectedObjects.Num() > 0)
+					{
+						TSet< UMaterialInterface* > Materials;
+
+						// Only keep materials
+						for (UObject* Asset : Context->SelectedObjects)
+						{
+							if (UMaterialInterface* Material = Cast<UMaterialInterface>(Asset))
+							{
+								Materials.Add(Material);
+							}
+						}
+
+						if (Materials.Num() == 0)
+						{
+							return;
+						}
+		//Denis
+		InSection2.AddMenuEntry(
+			"AddAppendToSubstitutionTable",
+			LOCTEXT("AddAppendToSubstitutionLabel", "Add Append To Substitution Table"),
+			LOCTEXT("AddAppendToSubstitutionTableTooltip", "Use Table and Append to substitution table from selected materials"),
+			FSlateIcon(),
+			FExecuteAction::CreateLambda([Materials]()
+				{
+					FString NewNameSuggestion = FString(TEXT("BaseMaterialSubstitutionDataTable"));
+					FString PackageNameSuggestion = FString(TEXT("/Game/")) + NewNameSuggestion;
+					FString Name;
+					FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
+					AssetToolsModule.Get().CreateUniqueAssetName(PackageNameSuggestion, TEXT(""), PackageNameSuggestion, Name);
+
+					TSharedPtr<SDlgPickAssetPath> PickAssetPathWidget =
+						SNew(SDlgPickAssetPath)
+						.Title(LOCTEXT("AddAppendToSubstitutionTablePickName", "Choose New DataTable Location"))
+						.DefaultAssetPath(FText::FromString(PackageNameSuggestion));
+
+					FString DataTableName;
+					FString PackageName;
+
+					if (PickAssetPathWidget->ShowModal() == EAppReturnType::Ok)
+					{
+						// Get the full name of where we want to create the asset.
+						PackageName = PickAssetPathWidget->GetFullAssetPath().ToString();
+						DataTableName = FPackageName::GetLongPackageAssetName(PackageName);
+
+						// Check if the user inputed a valid asset name, if they did not, give it the generated default name
+						if (DataTableName.IsEmpty())
+						{
+							// Use the defaults that were already generated.
+							PackageName = PackageNameSuggestion;
+							DataTableName = *Name;
+						}
+					}
+
+					UPackage* Package = CreatePackage(*PackageName);
+					check(Package);
+
+					//Read DataTable object BaseDT
+					
+
+
+					// Create DataTable object
+					UDataTable* DataTable = NewObject<UDataTable>(Package, *DataTableName, RF_Public | RF_Standalone);
+					DataTable->RowStruct = FMaterialSubstitutionDataTable::StaticStruct();
+
+					for (UMaterialInterface* Material : Materials)
+					{
+						FMaterialSubstitutionDataTable RowData;
+						RowData.
+						RowData.SearchString = Material->GetName();
+						RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
+						RowData.MaterialReplacement = nullptr;
+						DataTable->AddRow(Material->GetFName(), RowData);
+					}
+
+					FContentBrowserModule& ContentBrowserModule = FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
+					ContentBrowserModule.Get().SyncBrowserToAssets(TArray<UObject*>({ DataTable }), true);
+
+					Package->MarkPackageDirty();
+				}));
+			}
+			}
+			}));
 	}
 };
 
