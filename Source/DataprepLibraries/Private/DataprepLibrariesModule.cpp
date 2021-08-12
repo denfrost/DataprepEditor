@@ -184,8 +184,6 @@ public:
 						PackageName = PickAssetPathWidget->GetFullAssetPath().ToString();
 						DataTableName = FPackageName::GetLongPackageAssetName(PackageName);
 
-						if (PackageName.IsEmpty())
-						{
 							// Check if the user inputed a valid asset name, if they did not, give it the generated default name
 							if (DataTableName.IsEmpty())
 							{
@@ -193,6 +191,7 @@ public:
 								PackageName = PackageNameSuggestion;
 								DataTableName = *Name;
 							}
+
 							UPackage* Package = CreatePackage(*PackageName);
 							check(Package);
 
@@ -213,12 +212,6 @@ public:
 							ContentBrowserModule.Get().SyncBrowserToAssets(TArray<UObject*>({ DataTable }), true);
 
 							Package->MarkPackageDirty();
-						}
-						else //Implementation =)
-						{
-
-
-						}
 					}
 
 					
