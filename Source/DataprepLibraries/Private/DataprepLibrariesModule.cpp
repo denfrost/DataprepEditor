@@ -164,7 +164,7 @@ public:
 			FSlateIcon(),
 			FExecuteAction::CreateLambda([Materials]()
 				{
-					FString NewNameSuggestion = FString(TEXT("BaseMaterialSubstitutionDataTable"));
+					FString NewNameSuggestion = FString(TEXT("DT_AppendBaseMaterialSubstitution"));
 					FString PackageNameSuggestion = FString(TEXT("/Game/")) + NewNameSuggestion;
 					FString Name;
 					FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
