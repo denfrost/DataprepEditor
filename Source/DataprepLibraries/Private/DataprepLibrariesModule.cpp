@@ -15,6 +15,7 @@
 #include "ToolMenus.h"
 
 #include "UObject/ConstructorHelpers.h"
+#include "Engine/ObjectLibrary.h"
 
 #define LOCTEXT_NAMESPACE "DataprepLibraries"
 
@@ -173,6 +174,7 @@ public:
 					AssetToolsModule.Get().CreateUniqueAssetName(PackageNameSuggestion, TEXT(""), PackageNameSuggestion, Name);
 
 					UDataTable* ItemData;
+					UObjectLibrary::
 				    /// Content / DataTables / DT_BaseSubstitution.uasset
 					ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution'"));
 					ItemData = temp.Object;
