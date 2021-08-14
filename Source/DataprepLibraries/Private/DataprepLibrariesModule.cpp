@@ -174,7 +174,7 @@ public:
 
 					UDataTable* ItemData;
 				    /// Content / DataTables / DT_BaseSubstitution.uasset
-					static ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution'"));
+					ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution'"));
 					ItemData = temp.Object;
 					
 					UE_LOG(LogTemp, Log, TEXT("===================Actor UniqueID UObject = %s"), *ItemData->GetName());
