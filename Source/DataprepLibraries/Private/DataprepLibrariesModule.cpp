@@ -177,11 +177,11 @@ public:
 					TArray<FAssetData> AssetDataList;
 					UObjectLibrary* ObjectLibrary = nullptr;
 					ObjectLibrary = UObjectLibrary::CreateLibrary(UDataTable::StaticClass(), false, GIsEditor);
-					ObjectLibrary->LoadAssetDataFromPath(TEXT("/Game/")); //DT_BaseSubstitution.uasset E:/UE4Job/Icareum/Light26rtx/Content/DataTables/DT_BaseSubstitution.uasset
+					ObjectLibrary->LoadAssetDataFromPath(TEXT("/Game/DataTables")); //DT_BaseSubstitution.uasset E:/UE4Job/Icareum/Light26rtx/Content/DataTables/DT_BaseSubstitution.uasset
 					//ObjectLibrary->LoadAssetsFromAssetData();
 					ObjectLibrary->GetAssetDataList(AssetDataList);
 
-					UE_LOG(LogTemp, Log, TEXT("Found: %d %s assets."), AssetDataList.Num(), *UDataTable::StaticClass()->GetName());
+					UE_LOG(LogTemp, Log, TEXT("Found: %d %s assets. 1) %s"), AssetDataList.Num(), *UDataTable::StaticClass()->GetName(), *AssetDataList[0].GetFullName());
 				    /// Content / DataTables / DT_BaseSubstitution.uasset
 					//ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution'"));
 					//ItemData = temp.Object;
