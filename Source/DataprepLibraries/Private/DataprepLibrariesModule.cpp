@@ -173,7 +173,8 @@ public:
 					AssetToolsModule.Get().CreateUniqueAssetName(PackageNameSuggestion, TEXT(""), PackageNameSuggestion, Name);
 
 					UDataTable* ItemData;
-					static ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/Datatables/DT_AppendBaseMaterialSubstitution.DT_AppendBaseMaterialSubstitution'"));
+				    /// Content / DataTables / DT_BaseSubstitution.uasset
+					static ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution.uasset'"));
 					ItemData = temp.Object;
 
 					TSharedPtr<SDlgPickAssetPath> PickAssetPathWidget =
