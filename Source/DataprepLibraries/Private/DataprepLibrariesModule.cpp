@@ -14,6 +14,8 @@
 #include "PropertyEditorModule.h"
 #include "ToolMenus.h"
 
+#include "UObject/ConstructorHelpers.h"
+
 #define LOCTEXT_NAMESPACE "DataprepLibraries"
 
 class FDataprepLibrariesModule : public IDataprepLibrariesModule
@@ -170,6 +172,10 @@ public:
 					FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
 					AssetToolsModule.Get().CreateUniqueAssetName(PackageNameSuggestion, TEXT(""), PackageNameSuggestion, Name);
 
+					UDataTable* ItemData;
+					static ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/Datatables/DT_AppendBaseMaterialSubstitution.DT_AppendBaseMaterialSubstitution'"));
+					ItemData = temp.Object;
+
 					TSharedPtr<SDlgPickAssetPath> PickAssetPathWidget =
 						SNew(SDlgPickAssetPath)
 						.Title(LOCTEXT("AddAppendToSubstitutionTablePickName", "Choose New DataTable Location"))
@@ -180,6 +186,7 @@ public:
 
 					if (PickAssetPathWidget->ShowModal() == EAppReturnType::Ok)
 					{
+
 						// Get the full name of where we want to create the asset.
 						PackageName = PickAssetPathWidget->GetFullAssetPath().ToString();
 						DataTableName = FPackageName::GetLongPackageAssetName(PackageName);
