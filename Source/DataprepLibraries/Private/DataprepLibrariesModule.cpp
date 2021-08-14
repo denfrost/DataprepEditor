@@ -173,13 +173,20 @@ public:
 					FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
 					AssetToolsModule.Get().CreateUniqueAssetName(PackageNameSuggestion, TEXT(""), PackageNameSuggestion, Name);
 
-					UDataTable* ItemData;
-					UObjectLibrary::
+					//UDataTable* ItemData;
+					TArray<FAssetData> AssetDataList;
+					UObjectLibrary* ObjectLibrary = nullptr;
+					ObjectLibrary = UObjectLibrary::CreateLibrary(UDataTable::StaticClass(), false, GIsEditor);
+					ObjectLibrary->LoadAssetDataFromPath(TEXT("/Game/")); //DT_BaseSubstitution.uasset E:/UE4Job/Icareum/Light26rtx/Content/DataTables/DT_BaseSubstitution.uasset
+					//ObjectLibrary->LoadAssetsFromAssetData();
+					ObjectLibrary->GetAssetDataList(AssetDataList);
+
+					UE_LOG(LogTemp, Log, TEXT("Found: %d %s assets."), AssetDataList.Num(), *UDataTable::StaticClass()->GetName());
 				    /// Content / DataTables / DT_BaseSubstitution.uasset
-					ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution'"));
-					ItemData = temp.Object;
+					//ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution'"));
+					//ItemData = temp.Object;
 					
-					UE_LOG(LogTemp, Log, TEXT("===================Actor UniqueID UObject = %s"), *ItemData->GetName());
+					//UE_LOG(LogTemp, Log, TEXT("===================Actor UniqueID UObject = %s"), *ItemData->GetName());
 
 					TSharedPtr<SDlgPickAssetPath> PickAssetPathWidget =
 						SNew(SDlgPickAssetPath)
