@@ -174,7 +174,7 @@ public:
 
 					UDataTable* ItemData;
 				    /// Content / DataTables / DT_BaseSubstitution.uasset
-					static ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution.uasset'"));
+					static ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution'"));
 					ItemData = temp.Object;
 
 					TSharedPtr<SDlgPickAssetPath> PickAssetPathWidget =
