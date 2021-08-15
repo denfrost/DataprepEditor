@@ -236,24 +236,23 @@ public:
 							DataTable->RowStruct = FMaterialSubstitutionDataTable::StaticStruct();
 							//BaseDataTable->GetRowStruct();
 
+							
 							for (UMaterialInterface* Material : Materials)
 							{
-								for (const FName& RowName : RowNames)
-								{
-									if (RowName != Material->GetFName())
+								if (!RowNames.Contains(Material->GetFName()))
 									{
 										FMaterialSubstitutionDataTable RowData;
 										RowData.SearchString = Material->GetName();
 										RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
 										RowData.MaterialReplacement = nullptr;
 										DataTable->AddRow(Material->GetFName(), RowData);
-										UE_LOG(LogTemp, Log, TEXT("Add New %s ."), *RowData->SearchString);
+										UE_LOG(LogTemp, Log, TEXT("Add New %s ."), *Material->GetName());
 									}
 									else
 									{
-										FMaterialSubstitutionDataTable BaseRowData = *pDataTable->FindRow<FMaterialSubstitutionDataTable>(RowName, FString(""), true);
-										DataTable->AddRow(RowName, BaseRowData);
-										UE_LOG(LogTemp, Log, TEXT("Add Base %s ."), *RowData->SearchString);
+										FMaterialSubstitutionDataTable BaseRowData = *pDataTable->FindRow<FMaterialSubstitutionDataTable>(Material->GetFName(), FString(""), true);
+										DataTable->AddRow(Material->GetFName(), BaseRowData);
+										UE_LOG(LogTemp, Log, TEXT("Add Base %s ."), *Material->GetName());
 									}
 								}
 							}
