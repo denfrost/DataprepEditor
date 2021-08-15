@@ -167,13 +167,13 @@ public:
 			FSlateIcon(),
 			FExecuteAction::CreateLambda([Materials]()
 				{
-					FString NewNameSuggestion = FString(TEXT("DT_AppendBaseMaterialSubstitution"));
-					FString PackageNameSuggestion = FString(TEXT("/Game/")) + NewNameSuggestion;
+					FString NewNameSuggestion = FString(TEXT("DT_AppendBaseSubstitution"));
+					FString PackageNameSuggestion = FString(TEXT("/Game/Dataprep/DataTables")) + NewNameSuggestion;
 					FString Name;
 					FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
 					AssetToolsModule.Get().CreateUniqueAssetName(PackageNameSuggestion, TEXT(""), PackageNameSuggestion, Name);
 
-					//UDataTable* ItemData;
+					/*
 					TArray<FAssetData> AssetDataList;
 					UObjectLibrary* ObjectLibrary = nullptr;
 					ObjectLibrary = UObjectLibrary::CreateLibrary(UDataTable::StaticClass(), false, GIsEditor);
@@ -182,7 +182,21 @@ public:
 					ObjectLibrary->GetAssetDataList(AssetDataList);
 
 					UE_LOG(LogTemp, Log, TEXT("Found: %d %s assets. 1) %s"), AssetDataList.Num(), *UDataTable::StaticClass()->GetName(), *AssetDataList[0].GetFullName());
-				    /// Content / DataTables / DT_BaseSubstitution.uasset
+
+					UDataTable* BaseDataTable = CastChecked<UDataTable>(AssetDataList[0].GetAsset());
+				    */
+					// Simple way for Load BAse Table
+					UDataTable* pDataTable = LoadObject<UDataTable>(NULL, UTF8_TO_TCHAR("DataTable'/Game/Dataprep/DataTables/DT_BaseSubstitution.DT_BaseSubstitution'"));
+					UE_LOG(LogTemp, Log, TEXT("Table %s have assets."), *pDataTable->GetName());
+
+
+					TArray<FName> RowNames = pDataTable->GetRowNames();
+					for (const FName& RowName : RowNames)
+					{
+						UE_LOG(LogTemp, Log, TEXT(" %s ."), *RowName.ToString());
+					}
+
+					/// Content / DataTables / DT_BaseSubstitution.uasset
 					//ConstructorHelpers::FObjectFinder<UDataTable> temp(TEXT("DataTable'/Game/DataTables/DT_BaseSubstitution'"));
 					//ItemData = temp.Object;
 					
@@ -216,7 +230,9 @@ public:
 
 							// Create DataTable object
 							UDataTable* DataTable = NewObject<UDataTable>(Package, *DataTableName, RF_Public | RF_Standalone);
+
 							DataTable->RowStruct = FMaterialSubstitutionDataTable::StaticStruct();
+							//BaseDataTable->GetRowStruct();
 
 							for (UMaterialInterface* Material : Materials)
 							{
@@ -224,6 +240,7 @@ public:
 								RowData.SearchString = Material->GetName();
 								RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
 								RowData.MaterialReplacement = nullptr;
+								
 								DataTable->AddRow(Material->GetFName(), RowData);
 							}
 
