@@ -168,7 +168,7 @@ public:
 			FExecuteAction::CreateLambda([Materials]()
 				{
 					FString NewNameSuggestion = FString(TEXT("DT_AppendBaseSubstitution"));
-					FString PackageNameSuggestion = FString(TEXT("/Game/Dataprep/DataTables")) + NewNameSuggestion;
+					FString PackageNameSuggestion = FString(TEXT("/Game/Dataprep/")) + NewNameSuggestion;
 					FString Name;
 					FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
 					AssetToolsModule.Get().CreateUniqueAssetName(PackageNameSuggestion, TEXT(""), PackageNameSuggestion, Name);
@@ -239,6 +239,7 @@ public:
 							for (UMaterialInterface* Material : Materials)
 							{
 								for (const FName& RowName : RowNames)
+								{
 									if (RowName != Material->GetFName())
 									{
 										FMaterialSubstitutionDataTable RowData;
@@ -246,12 +247,15 @@ public:
 										RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
 										RowData.MaterialReplacement = nullptr;
 										DataTable->AddRow(Material->GetFName(), RowData);
+										UE_LOG(LogTemp, Log, TEXT("Add New %s ."), *RowData->SearchString);
 									}
 									else
 									{
-									    FMaterialSubstitutionDataTable BaseRowData = *pDataTable->FindRow<FMaterialSubstitutionDataTable>(RowName, FString(""), true);
+										FMaterialSubstitutionDataTable BaseRowData = *pDataTable->FindRow<FMaterialSubstitutionDataTable>(RowName, FString(""), true);
 										DataTable->AddRow(RowName, BaseRowData);
+										UE_LOG(LogTemp, Log, TEXT("Add Base %s ."), *RowData->SearchString);
 									}
+								}
 							}
 
 							FContentBrowserModule& ContentBrowserModule = FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
