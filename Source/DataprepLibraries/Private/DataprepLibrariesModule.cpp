@@ -1,5 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+// Special Mod for Create Append DT base on Library Material DT (/Game/Dataprep/BaseTable/DT_BaseSubstitution)
+// 
+
 #include "DataprepLibrariesModule.h"
 #include "DataprepEditorMenu.h"
 #include "DataprepOperations.h"
@@ -186,7 +189,7 @@ public:
 					UDataTable* BaseDataTable = CastChecked<UDataTable>(AssetDataList[0].GetAsset());
 				    */
 					// Simple way for Load BAse Table
-					UDataTable* pDataTable = LoadObject<UDataTable>(NULL, UTF8_TO_TCHAR("DataTable'/Game/Dataprep/DataTables/DT_BaseSubstitution.DT_BaseSubstitution'"));
+					UDataTable* pDataTable = LoadObject<UDataTable>(NULL, UTF8_TO_TCHAR("DataTable'/Game/Dataprep/BaseTable/DT_BaseSubstitution.DT_BaseSubstitution'"));
 					UE_LOG(LogTemp, Log, TEXT("Table %s have assets."), *pDataTable->GetName());
 
 
@@ -254,7 +257,6 @@ public:
 										DataTable->AddRow(Material->GetFName(), BaseRowData);
 										UE_LOG(LogTemp, Log, TEXT("Add Base %s ."), *Material->GetName());
 									}
-								}
 							}
 
 							FContentBrowserModule& ContentBrowserModule = FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
