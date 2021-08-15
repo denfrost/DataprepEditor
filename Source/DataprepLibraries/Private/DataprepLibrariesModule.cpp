@@ -193,7 +193,9 @@ public:
 					TArray<FName> RowNames = pDataTable->GetRowNames();
 					for (const FName& RowName : RowNames)
 					{
+						FMaterialSubstitutionDataTable* RowData = pDataTable->FindRow<FMaterialSubstitutionDataTable>(RowName, FString(""),true);
 						UE_LOG(LogTemp, Log, TEXT(" %s ."), *RowName.ToString());
+						UE_LOG(LogTemp, Log, TEXT(" %s ."), *RowData->SearchString);
 					}
 
 					/// Content / DataTables / DT_BaseSubstitution.uasset
@@ -236,12 +238,20 @@ public:
 
 							for (UMaterialInterface* Material : Materials)
 							{
-								FMaterialSubstitutionDataTable RowData;
-								RowData.SearchString = Material->GetName();
-								RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
-								RowData.MaterialReplacement = nullptr;
-								
-								DataTable->AddRow(Material->GetFName(), RowData);
+								for (const FName& RowName : RowNames)
+									if (RowName != Material->GetFName())
+									{
+										FMaterialSubstitutionDataTable RowData;
+										RowData.SearchString = Material->GetName();
+										RowData.StringMatch = EEditorScriptingStringMatchType::ExactMatch;
+										RowData.MaterialReplacement = nullptr;
+										DataTable->AddRow(Material->GetFName(), RowData);
+									}
+									else
+									{
+									    FMaterialSubstitutionDataTable BaseRowData = *pDataTable->FindRow<FMaterialSubstitutionDataTable>(RowName, FString(""), true);
+										DataTable->AddRow(RowName, BaseRowData);
+									}
 							}
 
 							FContentBrowserModule& ContentBrowserModule = FModuleManager::Get().LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
